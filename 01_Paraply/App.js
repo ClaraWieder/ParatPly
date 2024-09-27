@@ -37,62 +37,42 @@ if(!getApps().length) {
 const db = getFirestore(app); // Initialiser Firestore instans
 export { db }; // Eksporter Firestore instansen
 
-// Opret separate Stack Navigators for hver skærm
-const HomeStack = createStackNavigator();
-const MapStack = createStackNavigator();
-const ReservationStack = createStackNavigator();
+// Opret en Stack Navigator
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator(); // Bottom Tab Navigator
 
-// Stack for Home
-function HomeStackScreen() {
-    return (
-        <HomeStack.Navigator>
-            <HomeStack.Screen name="Home" component={HomeView} options={{ headerShown: null }} />
-        </HomeStack.Navigator>
-    );
+// Bundnavigation (Tabs)
+function TabNavigator() {
+  return (
+    <Tab.Navigator screenOptions={({ route }) => ({
+      tabBarIcon: ({ color, size }) => {
+        let iconName;
+        if(route.name == 'Home') {
+          iconName = 'home';
+        } else if(route.name === 'Map') {
+          iconName = 'map';
+        } else if(route.name === 'Reservation') {
+          iconName = 'add';
+        }
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+    })}
+    >
+      <Tab.Screen name="Home" component={HomeView} />
+      <Tab.Screen name="Map" component={MapViewScreen} />
+      <Tab.Screen name="Reservation" component={ReservationView} />
+    </Tab.Navigator>
+  )
 }
 
-// Stack for Map
-function MapStackScreen() {
-    return (
-        <MapStack.Navigator>
-            <MapStack.Screen name="Map" component={MapViewScreen} options={{ headerShown: null }} />
-        </MapStack.Navigator>
-    );
-}
-
-// Stack for Reservation
-function ReservationStackScreen() {
-    return (
-        <ReservationStack.Navigator>
-            <ReservationStack.Screen name="Reservation" component={ReservationView} options={{ headerShown: null }} />
-        </ReservationStack.Navigator>
-    );
-}
-
-// Bottom Tab Navigator
-const Tab = createBottomTabNavigator();
-
+// App-funktion med Stack Navigator, der indeholder alle skærme
 export default function App() {
     return ( 
         <NavigationContainer>
-            <Tab.Navigator screenOptions={({ route }) => ({
-              tabBarIcon: ({ color, size }) => {
-                let iconName;
-                if(route.name === 'Home') {
-                    iconName = 'home';
-                } else if(route.name === 'Map') {
-                    iconName = 'map';
-                } else if(route.name === 'Reservation') {
-                    iconName = 'add';
-                } 
-                // Returner det rigtige Ionicons baseret på fanen
-                return <Ionicons name={iconName} size={size} color={color} />;
-              },
-            })}>
-                <Tab.Screen name="Home" component={HomeStackScreen} />
-                <Tab.Screen name="Map" component={MapStackScreen} />
-                <Tab.Screen name="Reservation" component={ReservationStackScreen} />
-            </Tab.Navigator>
+          <Stack.Navigator>
+            <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
+            <Stack.Screen name="Reservation" component={ReservationView} options={{ headerShown: false }} />
+          </Stack.Navigator>
         </NavigationContainer>
     );
   }

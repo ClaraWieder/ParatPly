@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Dimensions, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import { useEffect, useState } from "react";
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location'; // Expo Location API
@@ -57,6 +57,23 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
     });
+
+    // Funktion der viser en pop-up, når man trykker på en pin
+    const handleMarkerPress = (station) => {
+        Alert.alert(
+            `Reserver paraply fra ${station.name}`, `Tilgængelige paraplyer: ${station.available_umbrellas}`,
+            [
+                {
+                    text: 'Nej',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Ja',
+                    onPress: () => navigation.navigate('Reservation', { station }), // Naviger til ReservationView med station-data
+                },
+            ]
+        );
+    };
 
     if(loading) {
         return (
