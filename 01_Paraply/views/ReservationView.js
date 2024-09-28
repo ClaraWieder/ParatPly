@@ -80,5 +80,5 @@ const styles = StyleSheet.create({
     reservationContainer: {
         marginTop: 40,
         alignItems: 'center',
-    }
+    },
 });
