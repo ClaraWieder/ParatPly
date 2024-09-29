@@ -115,12 +115,3 @@ const styles = StyleSheet.create({
     },
 
 });
-
-/* Forklaring af koden:
-navigation Prop: Vi bruger navigation fra react-navigation, som bliver tilføjet automatisk, når du bruger navigation i en Stack.Navigator. Dette giver os mulighed for at skifte mellem skærmene (f.eks. "Map" og "Reservation").
-
-Button Komponent: Vi har tilføjet to knapper:
-
-Den første knap navigerer til kortet (MapView), hvor brugeren kan finde paraplystationer.
-Den anden knap navigerer til reservationsskærmen (ReservationView), hvor brugeren kan se sine reservationer.
-Styles: Vi har brugt StyleSheet til at style layoutet og placere teksten centralt samt give knapperne en lidt forskellig farve og margin. */

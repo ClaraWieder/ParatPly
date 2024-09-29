@@ -3,10 +3,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function ReservationView({ route, navigation }) {
-    /*const { station } = route.params; // Modtag stationens data fra navigationen*/
-    /*const station = route?.params?.station || { name: "General reservation", availableUmbrellas: 0 }; // Håndter både specifik station og generel reservation*/
-    /*const [availableUmbrellas, setAvailableUmbrellas] = useState(station.available_umbrellas); // Stationens antal paraplyer*/
-
     const station = route?.params?.station || null; // Få den valgte station eller null
     const [availableUmbrellas, setAvailableUmbrellas] = useState(station?.available_umbrellas || 0); // Tilgængelige paraplyer
     const [currentReservation, setCurrentReservation] = useState(null); // Hold styr på igangværende reservation

@@ -58,23 +58,6 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
         longitudeDelta: 0.05,
     });
 
-    // Funktion der viser en pop-up, når man trykker på en pin
-    /*const handleMarkerPress = (station) => {
-        Alert.alert(
-            `Reserver paraply fra ${station.name}`, `Tilgængelige paraplyer: ${station.available_umbrellas}`,
-            [
-                {
-                    text: 'Nej',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Ja',
-                    onPress: () => navigation.navigate('Reservation', { station }), // Naviger til ReservationView med station-data
-                },
-            ]
-        );
-    };*/
-
     if(loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -91,7 +74,6 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
             region={userLocation || region} // Hvis brugerlokationen er tilgængelig, brug den
             onRegionChangeComplete={(region) => setRegion(region)}
             showsUserLocation={true} // Viser brugerens lokation som blå prik
-            //followsUserLocation={true} // Følger brugerens lokation automatisk
         >
             {/* Marker for paraplystationer hentet fra Firebase */}
             {stations.map((station, index) => (
@@ -99,8 +81,6 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
                     key={index} 
                     coordinate={{ latitude: station.latitude, longitude: station.longitude }} 
                     title={station.name} 
-                    //description={`${station.available_umbrellas} paraplyer tilgængelige`} 
-                    //onPress={() => navigation.navigate('Reservation', { station })} // Naviger til ReservationView med station-data
                 >
                     {/* Callout med stationens detaljer */}
                     <Callout tooltip>
