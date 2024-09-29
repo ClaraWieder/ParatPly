@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Dimensions, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from "react";
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location'; // Expo Location API
 
 import { collection, getDocs } from 'firebase/firestore'; // Importer kun de nødvendige Firestore-funktioner
@@ -59,7 +59,7 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
     });
 
     // Funktion der viser en pop-up, når man trykker på en pin
-    const handleMarkerPress = (station) => {
+    /*const handleMarkerPress = (station) => {
         Alert.alert(
             `Reserver paraply fra ${station.name}`, `Tilgængelige paraplyer: ${station.available_umbrellas}`,
             [
@@ -73,7 +73,7 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
                 },
             ]
         );
-    };
+    };*/
 
     if(loading) {
         return (
@@ -99,9 +99,22 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
                     key={index} 
                     coordinate={{ latitude: station.latitude, longitude: station.longitude }} 
                     title={station.name} 
-                    description={`${station.available_umbrellas} paraplyer tilgængelige`} 
-                    onPress={() => navigation.navigate('Reservation', { station })} // Naviger til ReservationView med station-data
-                />
+                    //description={`${station.available_umbrellas} paraplyer tilgængelige`} 
+                    //onPress={() => navigation.navigate('Reservation', { station })} // Naviger til ReservationView med station-data
+                >
+                    {/* Callout med stationens detaljer */}
+                    <Callout tooltip>
+                        <View style={styles.calloutContainer}>
+                            <Text style={styles.stationName}>Station Details</Text>
+                            <Text>Available Umbrellas: {station.available_umbrellas}</Text>
+                            <Text>Staion Name: {station.name}</Text>
+                            <Text>5.50 kr./min.</Text>
+                            <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('Reservation', { station })}>
+                                <Text style={styles.detailsButtonText}>View Details</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Callout>
+                </Marker>
             ))}
         </MapView>
         <StatusBar style="auto" />
@@ -113,9 +126,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
     },
     map: {
         width: Dimensions.get('window').width,
@@ -125,5 +135,32 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    calloutContainer: {
+        width: 200,
+        padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    stationName: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    detailsButton: {
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 10,
+        alignItems: 'center',
+    },
+    detailsButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
     },
 });

@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
-import { View, Text, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function ReservationView({ route, navigation }) {
     /*const { station } = route.params; // Modtag stationens data fra navigationen*/
@@ -42,17 +42,22 @@ export default function ReservationView({ route, navigation }) {
                 <>
                     <Text style={styles.stationName}>{station.name}</Text>
                     <Text style={styles.infoText}>Tilgængelige paraplyer: {availableUmbrellas}</Text>
-                    <Button title="Reserver en paraply" onPress={handleReservation} />
+                    
+                    <TouchableOpacity style={styles.confirmButton} onPress={handleReservation}>
+                        <Text style={styles.buttonText}>Lej en paraply</Text>
+                    </TouchableOpacity>
                 </>
             )}
             {/* Vis igangværende reservation, hvis den findes */}
             {currentReservation && (
                 <View style={styles.reservationContainer}>
                     <Text style={styles.infoText}>Igangværende reservation: {currentReservation.umbrellas} paraply fra {currentReservation.stationName}</Text>
-                    <Button title="Afslut reservation" onPress={handleEndReservation} />
+                    <TouchableOpacity style={styles.endButton} onPress={handleEndReservation}>
+                        <Text style={styles.buttonText}>Aflsut Reservation</Text>
+                    </TouchableOpacity>
                 </View>
             )}
-            {!station && currentReservation && (
+            {!station && !currentReservation && (
                 <Text style={styles.infoText}>Ingen igangværende reservation.</Text>
             )}
             <StatusBar style="auto" />
@@ -64,21 +69,46 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
         padding: 16,
+        justifyContent: 'center',
     },
     stationName: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
+        textAlign: 'center',
     },
     infoText: {
         fontSize: 18,
-        marginBottom: 40,
+        color: '#555',
+        textAlign: 'center',
+        marginBottom: 20,
     },
     reservationContainer: {
         marginTop: 40,
         alignItems: 'center',
+    },
+    confirmButton: {
+        backgroundColor: '#000',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 5,
+        marginTop: 20,
+        width: '100%',
+        alignItems: 'center',
+    },
+    endButton: {
+        backgroundColor: '#000',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 5,
+        marginTop: 20,
+        width: '100%',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
