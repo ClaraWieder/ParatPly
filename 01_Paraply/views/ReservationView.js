@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
-import { View, Text, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import { GlobalStyles } from '../styles/GlobalStyle';
 
 export default function ReservationView({ route, navigation }) {
     const station = route?.params?.station || null; // Få den valgte station eller null
@@ -28,40 +29,53 @@ export default function ReservationView({ route, navigation }) {
     // Håndter afslutning af reservation
     const handleEndReservation = () => {
         setCurrentReservation(null); // Nulstil igangværende reservation
+        setAvailableUmbrellas(availableUmbrellas + 1); // Giv paraplyen tilbage
         Alert.alert('Reservation afsluttet', 'Din reservation er afsluttet.');
     };
 
+    const handlePaymentNavigation = () => {
+        navigation.navigate('Payment');
+    };
+
+
     return (
-        <View style={styles.container}>
-            {/* Hvis vi har data om en station */}
-            {station && (
+        <View style={GlobalStyles.container}>
+            {/* Hvis vi har data om en station og vis kun knappen, hvis der ikke er en igangværende reservation */}
+            {station && !currentReservation && (
                 <>
-                    <Text style={styles.stationName}>{station.name}</Text>
-                    <Text style={styles.infoText}>Tilgængelige paraplyer: {availableUmbrellas}</Text>
+                    <Text style={GlobalStyles.stationName}>{station.name}</Text>
+                    <Text style={GlobalStyles.infoText}>Tilgængelige paraplyer: {availableUmbrellas}</Text>
                     
-                    <TouchableOpacity style={styles.confirmButton} onPress={handleReservation}>
-                        <Text style={styles.buttonText}>Lej en paraply</Text>
+                    <TouchableOpacity style={GlobalStyles.confirmButton} onPress={handleReservation}>
+                        <Text style={GlobalStyles.buttonText}>Lej en paraply</Text>
                     </TouchableOpacity>
                 </>
             )}
             {/* Vis igangværende reservation, hvis den findes */}
             {currentReservation && (
-                <View style={styles.reservationContainer}>
-                    <Text style={styles.infoText}>Igangværende reservation: {currentReservation.umbrellas} paraply fra {currentReservation.stationName}</Text>
-                    <TouchableOpacity style={styles.endButton} onPress={handleEndReservation}>
-                        <Text style={styles.buttonText}>Aflsut Reservation</Text>
+                <View style={GlobalStyles.reservationContainer}>
+                    <Text style={GlobalStyles.infoText}>
+                        Igangværende reservation: {currentReservation.umbrellas} paraply fra {currentReservation.stationName}
+                    </Text>
+
+                    <TouchableOpacity style={GlobalStyles.endButton} onPress={handleEndReservation}>
+                        <Text style={GlobalStyles.buttonText}>Aflsut Reservation</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={GlobalStyles.confirmButton} onPress={handlePaymentNavigation}>
+                        <Text style={GlobalStyles.buttonText}>Indtast Betalingsoplysninger</Text>
                     </TouchableOpacity>
                 </View>
             )}
             {!station && !currentReservation && (
-                <Text style={styles.infoText}>Ingen igangværende reservation.</Text>
+                <Text style={GlobalStyles.infoText}>Ingen igangværende reservation.</Text>
             )}
             <StatusBar style="auto" />
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -107,4 +121,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-});
+});*/

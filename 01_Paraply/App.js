@@ -1,41 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; 
 import { NavigationContainer } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { GlobalStyles } from './styles/GlobalStyle';
 
-// Firebase-importer
-import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore'; // Firestore
+// Import Firebase Firestore fra firebaseConfig.js
+import { db } from './firebaseConfig'; // Ny import af db fra firebaseConfig.js
 
 // Import af mine skærme
 import HomeView from './views/HomeView';
 import MapViewScreen from './views/MapViewScreen';
 import ReservationView from './views/ReservationView';
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyCMfN8pxB-jYRftzQlHLzqXIUZTDmv4gPQ",
-    authDomain: "paraply-291ca.firebaseapp.com",
-    databaseURL: "https://paraply-291ca-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "paraply-291ca",
-    storageBucket: "paraply-291ca.appspot.com",
-    messagingSenderId: "829793943310",
-    appId: "1:829793943310:web:33e141c44030d81a47a15f"
-};
-
-// Initialiser Firebase og Firestore
-let app;
-if(!getApps().length) {
-    app = initializeApp(firebaseConfig);
-    console.log('Firebase initialized');
-} else {
-    app = getApps()[0];
-}
-
-const db = getFirestore(app); // Initialiser Firestore instans
-export { db }; // Eksporter Firestore instansen
+import StationDetails from './views/StationDetails';
+import QRCodeScanner from './views/QRCodeScanner';
+import PaymentScreen from './views/PaymentScreen';
 
 // Opret en Stack Navigator
 const Stack = createStackNavigator();
@@ -53,36 +32,33 @@ function TabNavigator() {
           iconName = 'map';
         } else if(route.name === 'Reservation') {
           iconName = 'add';
+        } else if(route.name === 'Payment') {
+          iconName = 'card';
         }
         return <Ionicons name={iconName} size={size} color={color} />;
       },
+      tabBarStyle: GlobalStyles.tabBarStyle, // Global stil for Tab bar
     })}
     >
       <Tab.Screen name="Home" component={HomeView} />
       <Tab.Screen name="Map" component={MapViewScreen} />
       <Tab.Screen name="Reservation" component={ReservationView} />
+      <Tab.Screen name="Payment" component={PaymentScreen} />
     </Tab.Navigator>
-  )
+  );
 }
 
 // App-funktion med Stack Navigator, der indeholder alle skærme
 export default function App() {
     return ( 
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator screenOptions={{ contentStyle: GlobalStyles.container }}>
             <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
-            <Stack.Screen name="Reservation" component={ReservationView} options={{ headerShown: false }} />
+            <Stack.Screen name="Reservation" component={ReservationView} />
+            <Stack.Screen name="StationDetails" component={StationDetails} />
+            <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} />
+            <Stack.Screen name="Payment" component={PaymentScreen} />
           </Stack.Navigator>
         </NavigationContainer>
     );
-  }
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+}

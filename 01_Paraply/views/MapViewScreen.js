@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Dimensions, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from "react";
 import MapView, { Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location'; // Expo Location API
-
 import { collection, getDocs } from 'firebase/firestore'; // Importer kun de nødvendige Firestore-funktioner
-import { db } from '../App'; // Importer Firestore-instansen fra App.js
+import { db } from '../firebaseConfig'; // Importer Firestore-instansen fra firebaseConfig.js
+import { GlobalStyles } from '../styles/GlobalStyle';
 
 
 export default function MapViewScreen({ navigation }) { // Tilføj navigation som prop
@@ -60,7 +60,7 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
 
     if(loading) {
         return (
-            <View style={styles.loadingContainer}>
+            <View style={GlobalStyles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
                 <Text>Henter paraplystationer...</Text>
             </View>
@@ -68,41 +68,41 @@ export default function MapViewScreen({ navigation }) { // Tilføj navigation so
     }
     
     return (
-    <View style={styles.container}>
-        <MapView 
-            style={styles.map} 
-            region={userLocation || region} // Hvis brugerlokationen er tilgængelig, brug den
-            onRegionChangeComplete={(region) => setRegion(region)}
-            showsUserLocation={true} // Viser brugerens lokation som blå prik
-        >
-            {/* Marker for paraplystationer hentet fra Firebase */}
-            {stations.map((station, index) => (
-                <Marker 
-                    key={index} 
-                    coordinate={{ latitude: station.latitude, longitude: station.longitude }} 
-                    title={station.name} 
-                >
-                    {/* Callout med stationens detaljer */}
-                    <Callout tooltip>
-                        <View style={styles.calloutContainer}>
-                            <Text style={styles.stationName}>Station Details</Text>
-                            <Text>Available Umbrellas: {station.available_umbrellas}</Text>
-                            <Text>Staion Name: {station.name}</Text>
-                            <Text>5.50 kr./min.</Text>
-                            <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('Reservation', { station })}>
-                                <Text style={styles.detailsButtonText}>View Details</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Callout>
-                </Marker>
-            ))}
-        </MapView>
-        <StatusBar style="auto" />
-    </View>
-  );
+        <View style={GlobalStyles.container}>
+            <MapView 
+                style={GlobalStyles.map} 
+                region={userLocation || region} // Hvis brugerlokationen er tilgængelig, brug den
+                onRegionChangeComplete={(region) => setRegion(region)}
+                showsUserLocation={true} // Viser brugerens lokation som blå prik
+            >
+                {/* Marker for paraplystationer hentet fra Firebase */}
+                {stations.map((station, index) => (
+                    <Marker 
+                        key={index} 
+                        coordinate={{ latitude: station.latitude, longitude: station.longitude }} 
+                        title={station.name} 
+                    >
+                        {/* Callout med stationens detaljer */}
+                        <Callout tooltip>
+                            <View style={GlobalStyles.calloutContainer}>
+                                <Text style={GlobalStyles.stationName}>Station Details</Text>
+                                <Text>Available Umbrellas: {station.available_umbrellas}</Text>
+                                <Text>Staion Name: {station.name}</Text>
+                                <Text>5.50 kr./min.</Text>
+                                <TouchableOpacity style={GlobalStyles.confirmButton} onPress={() => navigation.navigate('StationDetails', { station })}>
+                                    <Text style={GlobalStyles.buttonText}>View Details</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Callout>
+                    </Marker>
+                ))}
+            </MapView>
+            <StatusBar style="auto" />
+        </View>
+    );
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -143,4 +143,4 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
     },
-});
+});*/
